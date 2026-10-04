@@ -1,0 +1,119 @@
+plugins {
+	id 'fabric-loom' version '1.8-SNAPSHOT'
+	id 'maven-publish'
+
+	id "me.modmuss50.mod-publish-plugin" version "0.3.5"
+	// https://modmuss50.github.io/mod-publish-plugin/
+}
+
+version = project.mod_version + "+mc" + project.minecraft_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	mavenCentral()
+
+	// for parchment
+	maven {
+		url = "https://maven.parchmentmc.org"
+	}
+
+	maven {
+		url = "https://api.modrinth.com/maven"
+	}
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+
+	mappings loom.layered() {
+		officialMojangMappings() {
+			setNameSyntheticMembers(false)
+		}
+		parchment("org.parchmentmc.data:parchment-1.21:2024.11.10")
+	}
+
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
+	include "maven.modrinth:midnightlib:${project.midnightlib_version}"
+
+	modCompileOnly "maven.modrinth:modmenu:${modmenu_version}"
+	modLocalRuntime "maven.modrinth:modmenu:${modmenu_version}"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}"}
+	}
+}
+
+// configure the maven publication
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+		// Notice: This block does NOT have the same function as the block in the top level.
+		// The repositories here will be used for publishing your artifact, not for
+		// retrieving dependencies.
+	}
+}
+
+publishMods {
+	file = remapJar.archiveFile
+	changelog = file("changelog.md").text
+	type = ALPHA
+	modLoaders.add("fabric")
+
+	displayName = "v${project.mod_version}-mc${project.minecraft_version}"
+	version = "v${project.mod_version}-mc${project.minecraft_version}"
+
+	modrinth {
+		projectId = "WECKae1F"
+		accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+		minecraftVersions.add(minecraft_version)
+
+		requires {
+			slug = "fabric-api"
+		}
+	}
+	github {
+		repository = "iPortalTeam/DimLib"
+		accessToken = providers.environmentVariable("GITHUB_TOKEN")
+		commitish = "${project.git_branch}"
+	}
+}

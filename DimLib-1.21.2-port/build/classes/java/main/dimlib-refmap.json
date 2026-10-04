@@ -1,0 +1,62 @@
+{
+  "mappings": {
+    "qouteall/dimlib/mixin/client/IClientPacketListener": {
+      "levels": "field_25273:Ljava/util/Set;"
+    },
+    "qouteall/dimlib/mixin/client/MixinBackupConfirmScreen": {
+      "<init>": "Lnet/minecraft/class_405;<init>(Ljava/lang/Runnable;Lnet/minecraft/class_405$class_406;Lnet/minecraft/class_2561;Lnet/minecraft/class_2561;Z)V",
+      "init": "Lnet/minecraft/class_405;method_25426()V"
+    },
+    "qouteall/dimlib/mixin/client/MixinMinecraft": {
+      "updateLevelInEngines": "Lnet/minecraft/class_310;method_18097(Lnet/minecraft/class_638;)V"
+    },
+    "qouteall/dimlib/mixin/common/IEWorldBorder": {
+      "listeners": "field_12730:Ljava/util/List;"
+    },
+    "qouteall/dimlib/mixin/common/MixinMinecraftServer": {
+      "Lnet/minecraft/server/MinecraftServer;createLevels(Lnet/minecraft/server/level/progress/ChunkProgressListener;)V": "Lnet/minecraft/server/MinecraftServer;method_3786(Lnet/minecraft/class_3949;)V"
+    },
+    "qouteall/dimlib/mixin/common/MixinPlayerList": {
+      "Lnet/minecraft/network/protocol/game/ClientboundChangeDifficultyPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V": "Lnet/minecraft/class_2632;<init>(Lnet/minecraft/class_1267;Z)V",
+      "placeNewPlayer": "Lnet/minecraft/class_3324;method_14570(Lnet/minecraft/class_2535;Lnet/minecraft/class_3222;Lnet/minecraft/class_8792;)V"
+    },
+    "qouteall/dimlib/mixin/common/MixinPrimaryLevelData": {
+      "worldGenSettingsLifecycle": "Lnet/minecraft/class_31;method_29588()Lcom/mojang/serialization/Lifecycle;"
+    },
+    "qouteall/dimlib/mixin/common/MixinWorldDimensions": {
+      "bake": "Lnet/minecraft/class_7723;method_45518(Lnet/minecraft/class_2378;)Lnet/minecraft/class_7723$class_7725;",
+      "isVanillaLike": "Lnet/minecraft/class_7723;method_45528(Lnet/minecraft/class_5321;Lnet/minecraft/class_5363;)Z"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "qouteall/dimlib/mixin/client/IClientPacketListener": {
+        "levels": "field_25273:Ljava/util/Set;"
+      },
+      "qouteall/dimlib/mixin/client/MixinBackupConfirmScreen": {
+        "<init>": "Lnet/minecraft/class_405;<init>(Ljava/lang/Runnable;Lnet/minecraft/class_405$class_406;Lnet/minecraft/class_2561;Lnet/minecraft/class_2561;Z)V",
+        "init": "Lnet/minecraft/class_405;method_25426()V"
+      },
+      "qouteall/dimlib/mixin/client/MixinMinecraft": {
+        "updateLevelInEngines": "Lnet/minecraft/class_310;method_18097(Lnet/minecraft/class_638;)V"
+      },
+      "qouteall/dimlib/mixin/common/IEWorldBorder": {
+        "listeners": "field_12730:Ljava/util/List;"
+      },
+      "qouteall/dimlib/mixin/common/MixinMinecraftServer": {
+        "Lnet/minecraft/server/MinecraftServer;createLevels(Lnet/minecraft/server/level/progress/ChunkProgressListener;)V": "Lnet/minecraft/server/MinecraftServer;method_3786(Lnet/minecraft/class_3949;)V"
+      },
+      "qouteall/dimlib/mixin/common/MixinPlayerList": {
+        "Lnet/minecraft/network/protocol/game/ClientboundChangeDifficultyPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V": "Lnet/minecraft/class_2632;<init>(Lnet/minecraft/class_1267;Z)V",
+        "placeNewPlayer": "Lnet/minecraft/class_3324;method_14570(Lnet/minecraft/class_2535;Lnet/minecraft/class_3222;Lnet/minecraft/class_8792;)V"
+      },
+      "qouteall/dimlib/mixin/common/MixinPrimaryLevelData": {
+        "worldGenSettingsLifecycle": "Lnet/minecraft/class_31;method_29588()Lcom/mojang/serialization/Lifecycle;"
+      },
+      "qouteall/dimlib/mixin/common/MixinWorldDimensions": {
+        "bake": "Lnet/minecraft/class_7723;method_45518(Lnet/minecraft/class_2378;)Lnet/minecraft/class_7723$class_7725;",
+        "isVanillaLike": "Lnet/minecraft/class_7723;method_45528(Lnet/minecraft/class_5321;Lnet/minecraft/class_5363;)Z"
+      }
+    }
+  }
+}

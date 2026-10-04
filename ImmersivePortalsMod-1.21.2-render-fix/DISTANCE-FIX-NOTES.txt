@@ -1,0 +1,55 @@
+Minecraft 1.21.2 portal terrain clipping fix - October 3, 2026
+
+Output: ../../immersive_portals_1.21.2_alpha_1.2.jar
+Mod version: 6.0.6+mc1.21.2.renderfix2
+
+Evidence:
+- User confirmed alpha_1.1 fixes destination fog overwriting the surrounding world.
+- The new screenshots show enlarged cutout vegetation in the portal view, consistent
+  with destination geometry on the camera side of the portal not being clipped.
+- The preserved 1.21.3 distance-fixed checkpoint differs from the original 1.21.2
+  class files only in MixinRenderSystem_Clipping and IPConfig. Its config registers
+  the shader clipping hook and its IPConfig prevents disabling clipping.
+- The current installed config already has enableClippingMechanism=true. A config
+  change alone is therefore not the fix for this instance.
+- The 1.21.2 terrain clipping setup/cleanup injections target renderSectionLayer
+  calls inside renderLevel with require=0. Those calls moved into framegraph
+  callbacks. The injections no longer reach the terrain draw.
+- The existing MixinLevelRenderer_Optional still updates the shader clipping uniform
+  before CompiledShaderProgram.apply inside renderSectionLayer. It needs an active
+  portal clipping plane to supply the correct uniform instead of the no-clip value.
+
+Changes:
+- Hook the actual renderSectionLayer method (intermediary method_3251), at HEAD and
+  RETURN. Set the portal's destination clipping plane, retaining the original
+  -0.01 adjustment, mirror face-culling and optional depth-clamp behavior. Clean up
+  on both normal and missing-shader early returns.
+- Restore the shader-selection clipping maintenance from the preserved 1.21.3
+  implementation, with exact 1.21.2 intermediary selectors. Cover both setShader
+  overloads because ShaderProgram selection directly assigns the shader rather
+  than calling the CompiledShaderProgram overload. Terrain supplies its plane at
+  the existing pre-apply hook; unrelated shaders have stale clipping uniforms reset.
+- Preserve the alpha_1.1 framebuffer-clear fix byte-for-byte.
+- Do not copy 1.21.3 binaries, overwrite existing classes, force user settings, or
+  alter installed mods or saves.
+
+Build and checks:
+Run build.py with --jdk, --mixin, --joml. Default --fix-version 2 builds alpha_1.2;
+--fix-version 1 can reproduce the earlier sky-only overlay.
+Java 21 compilation passed. javac reports only missing Fabric EnvType annotation
+metadata on compile dependencies; no compile errors. The build checks ZIP integrity,
+duplicate entries, mixin registration, the exact changed-entry set, and preservation
+of the alpha_1.1 clear-hook bytecode. Compiled hook signatures and annotations were
+inspected against the preserved 1.21.2 bytecode and refmap. In-game behavior remains
+for user testing, as requested; no game was launched.
+
+All original alpha_1.0 classes/resources and embedded dependencies are preserved.
+Only mod metadata and mixin registration are changed, plus three new mixin classes.
+The source files and build script for every new class are retained in this folder.
+Missing historical source files are a maintenance limitation; Minecraft runs the
+compiled classes in the JAR and does not require those .java files at runtime.
+
+Replace the installed alpha_1.1 JAR with alpha_1.2; do not enable both. Test the same
+portal in both directions while approaching and backing away, especially the grass
+visible through the Nether-to-Overworld view. Also check the surrounding sky remains
+correct and that normal terrain outside the portal is unaffected.

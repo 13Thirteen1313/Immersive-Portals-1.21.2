@@ -1,0 +1,19 @@
+v1	named	intermediary
+FIELD	qouteall/dimlib/mixin/client/MixinBackupConfirmScreen	Lnet/minecraft/client/gui/screens/BackupConfirmScreen$Listener;	onProceed	field_46857
+FIELD	qouteall/dimlib/mixin/client/MixinBackupConfirmScreen	Lnet/minecraft/client/gui/components/Checkbox;	eraseCache	field_19234
+FIELD	qouteall/dimlib/mixin/client/MixinBackupConfirmScreen	Lnet/minecraft/client/gui/components/MultiLineLabel;	message	field_2365
+FIELD	qouteall/dimlib/mixin/common/MixinMappedRegistry	Ljava/util/Map;	byLocation	field_11107
+FIELD	qouteall/dimlib/mixin/common/MixinMappedRegistry	Lit/unimi/dsi/fastutil/objects/ObjectList;	byId	field_26682
+FIELD	qouteall/dimlib/mixin/common/MixinMappedRegistry	Lit/unimi/dsi/fastutil/objects/Reference2IntMap;	toId	field_26683
+FIELD	qouteall/dimlib/mixin/common/MixinMappedRegistry	Ljava/util/Map;	byKey	field_25067
+FIELD	qouteall/dimlib/mixin/common/MixinMappedRegistry	Lnet/minecraft/resources/ResourceKey;	key	field_41126
+FIELD	qouteall/dimlib/mixin/common/MixinMappedRegistry	Ljava/util/Map;	byValue	field_36461
+FIELD	qouteall/dimlib/mixin/common/MixinMappedRegistry	Z	frozen	field_36463
+FIELD	qouteall/dimlib/mixin/common/MixinMappedRegistry	Ljava/util/Map;	registrationInfos	field_49135
+FIELD	qouteall/dimlib/mixin/common/MixinMinecraftServer	Ljava/util/Map;	levels	field_4589
+FIELD	qouteall/dimlib/mixin/common/MixinMinecraftServer	Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;	storageSource	field_23784
+FIELD	qouteall/dimlib/mixin/common/MixinMinecraftServer	Ljava/util/concurrent/Executor;	executor	field_17200
+METHOD	qouteall/dimlib/mixin/common/MixinMappedRegistry	(I)Ljava/lang/Object;	byId	method_10200
+METHOD	qouteall/dimlib/mixin/common/MixinMinecraftServer	()Z	isStopped	method_3750
+METHOD	qouteall/dimlib/mixin/common/MixinMinecraftServer	()Z	isDedicatedServer	method_3816
+METHOD	qouteall/dimlib/mixin/common/MixinMinecraftServer	()V	waitUntilNextTick	method_16208

@@ -1,0 +1,44 @@
+Minecraft 1.21.2 portal framebuffer clear fix
+
+Output: ../../immersive_portals_1.21.2_alpha_1.1.jar
+Displayed mod version: 6.0.6+mc1.21.2.renderfix1
+
+Cause:
+The released port's MixinLevelRenderer.redirectClearing targets renderLevel with
+require=0. In Minecraft 1.21.2, RenderSystem.clear(16640) instead runs in the
+static framegraph callback method_62218(Vector4f). The old redirect never fires.
+The in-view RenderDoc capture shows the nested Nether render clearing the shared
+framebuffer (resource 2278, chunk 14137) after setting Nether fog color. glClear
+ignores the stencil test and erases the outer world's color and depth.
+
+Fix:
+Register a static redirect on the exact 1.21.2 callback. Delegate to the existing
+PortalRenderer.replaceFrameBufferClearing() implementation. The stencil renderer
+already substitutes a stencil-tested fog triangle during nested rendering, and
+the ordinary world retains its normal clear. Require exactly one match so this
+hook cannot silently stop working again.
+
+Source preservation:
+The full 1.21.2 portal source is not preserved locally. This narrow source overlay
+builds against the preserved release, without borrowing later-version classes.
+All original class files, nested dependencies, and resources remain byte-identical.
+Only the mixin registration and mod version metadata change, plus one new class.
+The original alpha_1.0 JAR is retained.
+
+Build:
+Run build.py with Python 3, --jdk pointing to a Java 21 JDK and --mixin pointing to
+the installed Fabric sponge-mixin JAR. It uses the Minecraft 1.21.2 compile JAR
+preserved in the sibling DimLib project's .gradle cache. It verifies the base JAR
+hash, compiles the new source, builds the output, and checks archive integrity and
+the exact set of changed entries. Annotation processing is intentionally disabled;
+the new mixin explicitly uses intermediary runtime names rather than a refmap.
+
+Validation:
+Compilation and archive checks passed. Inspected the compiled static handler and
+its exact selector, remap=false, require=1, allow=1 annotations. No Minecraft launch
+or in-game test was performed for this build, at the user's request.
+
+Installation:
+Replace the existing Immersive Portals JAR in mods with alpha_1.1; do not keep
+both enabled. Keep the existing Fabric API and other settings. No installed mod
+or save was changed by this build.

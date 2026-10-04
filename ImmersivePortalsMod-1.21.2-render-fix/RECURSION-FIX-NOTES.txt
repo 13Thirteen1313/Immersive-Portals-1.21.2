@@ -1,0 +1,56 @@
+Minecraft 1.21.2 portal-in-portal rendering fix - October 3, 2026
+
+Output: ../../immersive_portals_1.21.2_alpha_1.3.jar
+Mod version: 6.0.6+mc1.21.2.renderfix3
+SHA256: 52d384693fbf23b4ae39e920ac3ebad0e5d5937de13e50c5277786ea5a06dd11
+
+Diagnosis:
+- The user's recursion limit 5, reduced rendering disabled, and compatibility
+  rendering disabled are appropriate for nested portal rendering.
+- The original optional before-translucent hook targets renderLevel and
+  Sheets.translucentCullBlockSheet. In 1.21.2 the draw moved to method_62214,
+  the main framegraph callback, and Sheets.translucentItemSheet (method_29382).
+  The old hook silently matches nothing. The outer view uses a late fallback.
+- RendererUsingStencil marks the frame before rendering portal contents. Its
+  once-per-frame guard would suppress recursive before-translucent calls even
+  with the world-rendering hook restored. Its late fallback also lacks a check
+  for a nested view, risking duplicate work or a stencil reset during recursion.
+
+Changes:
+- Add an exact, required injection into the actual 1.21.2 main-pass callback,
+  before the first translucent item batch, for each world view.
+- Restore the parent's captured FogParameters, fog-color context, diffuse
+  lighting, and clipping cleanup when nested rendering returns.
+- Nested stencil views bypass the outer-view frame guard and use the existing
+  doPortalRendering path. Each sibling view runs independently. The established
+  recursion limit, visibility checks, stencil depth restoration, and lag
+  protection remain in effect.
+- Skip the late hand-phase fallback inside nested views. Keep the original
+  outer-view fallback and its duplicate-render guard.
+- Preserve the alpha_1.2 sky and terrain/shader clipping mixins byte-for-byte.
+  All original alpha_1.0 classes and resources remain untouched; only metadata,
+  mixin registration and added mixin classes differ.
+
+Build:
+Run build.py with Java 21, --mixin, --joml, and --minecraft-runtime pointing to
+the installed Minecraft 1.21.2 Fabric client-intermediary.jar. Default fix version
+is now 3. Earlier releases can still be reproduced with --fix-version 1 or 2.
+The runtime JAR version and intermediary class presence are checked before use.
+
+Validation:
+- Java 21 compilation passed (only missing Fabric EnvType annotation metadata
+  warnings on the compile classpath).
+- Inspected the actual installed 1.21.2 LevelRenderer bytecode: method_62214
+  has the exact handler parameter types and one invocation of method_29382.
+- Inspected compiled injections and the stencil shadow method against their
+  target bytecode. Required hooks use require=1 and allow=1.
+- Builder verified ZIP integrity, unique entries, mixin registration, exact
+  changed-entry set, and byte-for-byte preservation of all three earlier fixes.
+- No Minecraft launch or in-game testing, per the user's request. Nested portal
+  appearance and transparency ordering still require the user's visual check.
+
+Installation/testing:
+Replace the installed alpha_1.2 mod JAR with alpha_1.3 (one copy of the mod).
+Keep the current recursion settings. Check the second portal through the first,
+then approach/traverse them. Also check the existing sky and vegetation fixes.
+Lag protection can still temporarily reduce the effective recursion limit to 1.
